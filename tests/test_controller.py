@@ -18,6 +18,7 @@ snippet_lipsum = make_snippet('lipsum', code="Lorem ipsum dolor sit amet")
 snippet_python = make_snippet('egg', code='print("Hello world")')
 snippet_htmlxss = make_snippet('htmlxss', code='<script>alert("XSS");</script>')
 snippet_classified = make_snippet('classified', code='T_xJV3P^FcvYijzH')
+snippet_brainfuck = make_snippet('brainfuck', code='++++++++++[>+>+++>+++++++>++++++++++<<<<-]>>>++++.+++++++++.')
 
 UA_HUMAN = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0"
 UA_BOT = "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)"
@@ -179,6 +180,18 @@ class TestController(unittest.TestCase):
                 bottle.template.assert_not_called()
                 self.assertEqual(res.status, 200)
                 self.assertEqual(res.read().decode(), snippet_python.code)
+
+    def test_extensions(self):
+        with patch('bin.models.Snippet') as MockSnippet:
+            MockSnippet.get_by_id.return_value = snippet_brainfuck
+
+            with urlreq.urlopen("http://localhost:8012/brainfuck.bf") as res:
+                self.assertEqual(res.status, 200)
+                self.assertIn('/?parentid=brainfuck&lang=brainfuck', res.read().decode())
+
+            with urlreq.urlopen("http://localhost:8012/brainfuck.uhgiuqefh") as res:
+                self.assertEqual(res.status, 200)
+                self.assertIn('/?parentid=brainfuck&lang=text', res.read().decode())
 
     def test_against_xss(self):
         testcase = self

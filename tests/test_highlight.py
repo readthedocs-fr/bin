@@ -8,7 +8,8 @@ class TestHighlight(unittest.TestCase):
         try:
             pygments.lexers.get_lexer_by_name(lang)
             return True
-        except pygments.utils.ClassNotFound:
+        except pygments.util.ClassNotFound:
+            print(lang)
             return False
 
     def test_languages_has_formatter(self):

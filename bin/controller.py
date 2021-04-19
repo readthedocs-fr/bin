@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 from metrics import Time
 from bin import root, config, models
-from bin.highlight import highlight, parse_language, parse_extension, languages
+from bin.highlight import highlight, parse_extension, parse_language, validate_extension, languages
 
 
 logger = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ def post_new():
     forms = bt.request.forms
 
     code = None
-    lang = config.DEFAULT_LANGUAGE
+    ext = config.DEFAULT_LANGUAGE
     maxusage = config.DEFAULT_MAXUSAGE
     lifetime = config.DEFAULT_LIFETIME
     parentid = ''
@@ -101,16 +101,19 @@ def post_new():
             part = next(files.values())
             charset = cgi.parse_header(part.content_type)[1].get('charset', 'utf-8')
             code = part.file.read(config.MAXSIZE).decode(charset)
-            lang = parse_extension(Path(part.filename).suffix.lstrip('.')) or lang
+            filename = part.filename
+            if filename:
+                ext = validate_extension(Path(filename.casefold()).suffix.lstrip('.')) or ext
         if forms:
             # WSGI forces latin-1 decoding, this is wrong, we recode it in utf-8
             code = forms.get('code', '').encode('latin-1').decode() or code
-            lang = forms.get('lang') or lang
+            lang = forms.get('lang')
+            if lang:
+                ext = parse_language(lang.casefold()) or ext
             maxusage = int(forms.get('maxusage') or maxusage)
             lifetime = Time(forms.get('lifetime') or lifetime)
             parentid = forms.get('parentid', '')
 
-        ext = parse_language(lang)
         if not code:
             raise ValueError("Code is missing")
         if maxusage < 0:
@@ -199,7 +202,7 @@ def report():
         raise bt.HTTPError(400, "Missing snippetid")
 
     try:
-        snippet = models.Snippet.get_by_id(snippetid)
+        models.Snippet.get_by_id(snippetid)
     except KeyError:
         raise bt.HTTPError(404, "Snippet not found")
     logger.warning("The snippet %s got reported by %s", snippetid, name)

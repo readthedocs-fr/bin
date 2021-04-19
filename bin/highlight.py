@@ -2,9 +2,8 @@
 
 
 import pygments
-from pygments.lexers import get_lexer_by_name
+from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
-
 
 languages = [
     # (ext, lang)
@@ -12,6 +11,7 @@ languages = [
     ('cpp', 'cpp'),
     ('cs', 'csharp'),
     ('css', 'css'),
+    ('dart', 'dart'),
     ('diff', 'diff'),
     ('erl', 'erlang'),
     ('ex', 'elixir'),
@@ -23,6 +23,7 @@ languages = [
     ('java', 'java'),
     ('js', 'javascript'),
     ('json', 'json'),
+    ('julia', 'jl'),
     ('kt', 'kotlin'),
     ('less', 'less'),
     ('lisp', 'lisp'),
@@ -48,23 +49,40 @@ languages = [
 exttolang = {ext: lang for ext, lang in languages}
 langtoext = {lang: ext for ext, lang in languages}
 
+for n, aliases, filenames, _ in get_all_lexers():
+    # some lexers doesn't have aliases or doesn't have filenames (such as JsonBareObjectLexer),
+    # theses are ignored
+    if len(aliases) == 0 or len(filenames) == 0:
+        continue
+
+    # even if the first alias is not always the same as the name,
+    # it is usually better than the other aliases (which can be equal to the name)
+    name = aliases[0]
+    ext = filenames[0][2:]  # remove the *. from the filename
+    if name not in langtoext:
+        langtoext[name] = ext 
+    if ext not in exttolang:
+        exttolang[ext] = name
+
+def validate_extension(ext):
+    """ Validate a language extension, returns it's extension or `None` """
+    if ext in exttolang:
+        return ext
+    return langtoext.get(ext)  # ext is maybe a language name
+
+def parse_language(lang):
+    """ Validate a language name, returns it's extension or `None` """
+    if lang in langtoext:
+        return langtoext.get(lang)  
+    if lang in exttolang:
+        return lang  # this is already an extension
 
 def parse_extension(ext):
     """ From a language extension, get a language """
-    ext = (ext or '').casefold()
+    if ext in exttolang:
+        return exttolang.get(ext)
     if ext in langtoext:
-        return ext  # this is a lang already
-    return exttolang.get(ext)
-
-
-def parse_language(lang):
-    """ From a language name, get an extension """
-    lang = (lang or '').casefold()
-    if lang in exttolang:
-        return lang  # this is an ext already
-    return langtoext.get(lang)
-
-
+        return ext  # this is already a lang
 
 class _TableHtmlFormatter(HtmlFormatter):
     """

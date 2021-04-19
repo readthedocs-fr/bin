@@ -1,6 +1,6 @@
 bottle==0.12.19
 genpw==1.0.0.post1
 jmetrics==1.0.3
-Pygments==2.8.0
+Pygments==2.8.1
 python-dotenv==0.15.0
 redis==3.5.3
