@@ -1,0 +1,15 @@
+{
+  "name": "bin-bundler",
+  "main": "index.js",
+  "engines": {
+    "node": ">=15"
+  },
+  "dependencies": {
+    "cssnano": "^5.0.1",
+    "cssnano-preset-advanced": "^5.0.0",
+    "fast-glob": "^3.2.5",
+    "meow": "^9.0.0",
+    "postcss": "^8.2.12",
+    "terser": "^5.6.1"
+  }
+}
