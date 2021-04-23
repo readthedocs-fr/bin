@@ -81,7 +81,7 @@ async function bundle([assetDirectory, htmlGlob], { gzip, svgo }) {
 
       const ext = extname(from);
       const hash = createHash('md5').update(content).digest('hex');
-      const to = `${ext ? from.slice(0, from.lastIndexOf(ext)) : from}.${hash}${ext}`;
+      const to = `${ext ? from.slice(0, from.lastIndexOf(ext)) : from}.${hash}${ext}${gzip ? '.gz' : ''}`;
 
       if (gzip) {
         content = gzipSync(content, { level: gzip });
@@ -98,7 +98,7 @@ async function bundle([assetDirectory, htmlGlob], { gzip, svgo }) {
         const ext = extname(path);
         htmlFiles[htmlPath][0] = htmlFiles[htmlPath][0].replace(
           new RegExp(`["']${escapeRegExp(path)}["']`, 'g'),
-          `"${ext ? path.slice(0, path.lastIndexOf(ext)) : path}.${hash}${ext}"`,
+          `"${ext ? path.slice(0, path.lastIndexOf(ext)) : path}.${hash}${ext}${gzip ? '.gz' : ''}"`,
         );
         changed = true;
       }
