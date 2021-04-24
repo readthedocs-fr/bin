@@ -15,9 +15,10 @@ const cssm = postcss([cssnano({ preset: 'advanced' })]);
 const matchers = {
   js: [/<script.*src=["']([\w/.-]+)["']/gi, (file, from) => terser.minify({ [from]: file.toString() }).then(({ code }) => code)],
   css: [
-    /<link.*(?:rel=["']?stylesheet["']?.*href=["']([\w/.-]+)["']|href=["']([\w/.-]+)["'].*rel=["']?stylesheet["']?).*/gi,
+    /<link.*(?:rel=["']?stylesheet["']?.*href=["']([\w/.-]+)["']|href=["']([\w/.-]+)["'].*rel=["']?stylesheet["']?)/gi,
     (file, from) => cssm.process(file.toString(), { map: false, from }).then(({ css }) => css),
   ],
+  svg: [/<img.*src['"]([\w/.-]+\.svg)['"]/gi, (file) => optimize(file.toString()).data],
   other: [/<link.*href=["']([\w/.-]+\.ico)["']/gi, (file) => file],
 }
 
@@ -26,7 +27,7 @@ function escapeRegExp(string) {
 }
 
 // TODO: merge scripts and styles (1 script/style file per page)
-async function bundle([assetDirectory, htmlGlob], { gzip, svgo }) {
+async function bundle([assetDirectory, htmlGlob], { gzip  }) {
   if (!assetDirectory || !htmlGlob) {
     throw new Error('The assetDirectory or htmlGlob is missing.')
   }
@@ -38,11 +39,7 @@ async function bundle([assetDirectory, htmlGlob], { gzip, svgo }) {
   }
 
   const htmlFiles = {};
-  const changes = {
-    js: {},
-    css: {},
-    other: {},
-  };
+  const changes = Object.fromEntries(Object.keys(matchers).map((key) => [key, {}]));
 
   let n = 0;
   const assetRegEx = new RegExp(`^/${basename(assetDirectory)}`);
@@ -107,11 +104,11 @@ async function bundle([assetDirectory, htmlGlob], { gzip, svgo }) {
 
   for (const htmlPath in htmlFiles) {
     let [html, changed] = htmlFiles[htmlPath];
+    /* TODO: fix regex and de-comment this
     if (svgo) {
       html = html.replace(/<svg.*>(.*)<\/svg>/gsi, (svg) => optimize(svg).data);
       changed = true;
-    }
-
+    }*/
     if (changed) {
       await writeFile(htmlPath, html);
     }
@@ -125,8 +122,7 @@ const cli = meow(`
     $ bin-bundler <assetDirectory> <htmlGlob>
 
   Options
-    --gzip, -g  Gzip level compression (1-9), 0 mean disabled, 0 by default
-    --svgo, -s  Minfiy and optimize (inline) SVGs, true by default`, {
+    --gzip, -g  Gzip level compression (1-9), 0 mean disabled, 0 by default`, {
   autoHelp: true,
   autoVersion: true,
   flags: {
@@ -135,11 +131,11 @@ const cli = meow(`
       alias: 'g',
       default: 0,
     },
-    svgo: {
+    /**svgo: {
       type: 'boolean',
       alias: 's',
       default: true,
-    },
+    },*/
   }
 });
 
