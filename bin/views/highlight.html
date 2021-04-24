@@ -16,38 +16,27 @@
             <input name=name hidden>
             <label>
                 <input type=submit>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
+                <img src="/assets/icons/report.svg">
             </label>
         </form>
 
         <div class="controls">
             % if token:
             <button class="control" id=delete-button title="Supprimer le snippet" hidden>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm1 8a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
-                </svg>
+                <img src="/assets/icons/delete.svg">
             </button>
             % end
 
             % if parentid:
             <a class="control" title="Voir la révision précédente" href="/{{parentid}}.{{ext}}">
-                <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                    <path d="M4.6 2.6C5 2.2 5.5 2 6 2H10.6C11.1 2 11.6 2.2 12 2.6L15.4 6C15.8 6.4 16 6.9 16 7.4V16C16 16.5 15.8 17 15.4 17.4 15 17.8 14.5 18 14 18H6C5.5 18 5 17.8 4.6 17.4 4.2 17 4 16.5 4 16V4C4 3.5 4.2 3 4.6 2.6ZM9.7 7.3C9.5 7.1 9.3 7 9 7 8.7 7 8.5 7.1 8.3 7.3 8.1 7.5 8 7.7 8 8V12.7C8 12.9 8.1 13.1 8.2 13.2 8.3 13.4 8.4 13.5 8.6 13.6L12 14.9C12.2 15 12.5 15 12.7 14.9 12.9 14.8 13.1 14.6 13.2 14.4 13.3 14.1 13.3 13.8 13.2 13.6 13.1 13.4 12.9 13.2 12.7 13.1L10 12V8C10 7.7 9.9 7.5 9.7 7.3Z"/>
-                </svg>
+                <img src="/assets/icons/history.svg">
             </a>
             % end
             <a class="control" title="Modifier" href="/?parentid={{snippetid}}&lang={{lang}}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
-                    <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
-                </svg>
+                <img src="/assets/icons/edit.svg">
             </a>
             <a class="control" title="Nouveau" href="/">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd" />
-                </svg>
+                <img src="/assets/icons/new.svg">
             </a>
         </div>
     </body>
