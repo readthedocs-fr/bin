@@ -6,7 +6,9 @@
     </head>
     <body>
         <form id=post-snippet name=post-snippet action="/new" method=POST accept-charset=utf-8>
-            <textarea spellcheck=false placeholder="Entrez votre code ou glissez un fichier." name=code autofocus required>{{code}}</textarea>
+            <textarea spellcheck=false placeholder="\\
+            % include('howto.txt')
+" name=code autofocus required>{{code}}</textarea>
             <input type=hidden name=parentid value="{{parentid}}">
 
             <div class="controls">
